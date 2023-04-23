@@ -7,7 +7,66 @@
     <title>Interpolation</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      
+      <div class="header graph_label">
+          <code id="x_value"></code>
+          <code>
+            x: [0, 5, 9, 13]
+            <br>
+            y: [1, 7, 1, 4 ]
+          </code>
+      </div>
+
+      <div class="graph">
+        <div>
+          <code class="graph_label">Linear Interpolation</code>
+          <div id="linear_graph"></div>
+          <code id="linear_equation" class="equation_label"></code>
+        </div>
+        <div>
+          <pre><code><br><br><br><br><br><br>
+            Function:
+            f(x) = {
+              1.2x + 1      if 0 &lt;= x &lt;= 5,
+              -1.5x + 14.5  if 5 &lt;  x &lt;= 9,
+              0.75x - 5.75  if 9 &lt;  x &lt;= 13,
+            }
+          </code></pre>            
+        </div>
+      </div>
+      <div class="graph">
+        <div>
+          <code class="graph_label">Polynomial Interpolation</code>
+          <div id = polynomial_graph></div>
+          <code id="polynomial_equation" class="equation_label"></code>
+        </div>
+        <div>
+          <pre><code>
+            Equation:
+            f(0)  = a(0)<sup>3</sup>  + b(0)<sup>2</sup>  + c(0)  + d = 1 
+            f(5)  = a(5)<sup>3</sup>  + b(5)<sup>2</sup>  + c(5)  + d = 7
+            f(9)  = a(9)<sup>3</sup>  + b(9)<sup>2</sup>  + c(9)  + d = 1
+            f(13) = a(13)<sup>3</sup> + b(13)<sup>2</sup> + c(13) + d = 4
+
+
+            Matrix:
+            [ 0    0   0   1  | 1 ]
+            [ 125  25  5   1  | 7 ]
+            [ 729  81  9   1  | 1 ]
+            [ 2197 169 13  1  | 4 ]
+
+
+            Solution:
+            a = 93 / 2080
+            b = -963 / 1040
+            c = 9801 / 2080
+            d = 1
+          </code></pre>
+        </div>
+      </div>
+
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

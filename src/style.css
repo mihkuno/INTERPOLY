@@ -2,10 +2,48 @@ html, body {
   margin: 0;
   padding: 0;
   background-color: rgb(30, 30, 30);
+  color: whitesmoke;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#app {
+  margin: auto;
+  margin-top: 25px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  width: 1000px;
+}
+
+.graph {
+  padding: 25px;
+  display: flex;
+  justify-content: left;
+}
+
+.graph_label {
+  font-size: 14px;
+}
+
+.equation_label {
+  font-size: 9.7px;
+}
+
+.x_val {
+  color: #cd84f1;
+}
+
+.y_val {
+  color: yellow;
+}
+
+.header {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
 }
 
 canvas {
   display: block;
+  padding: 10px 0;
 }

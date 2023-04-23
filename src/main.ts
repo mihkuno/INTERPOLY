@@ -101,7 +101,7 @@ const polynomial_interpolation = (p: p5) => {
     /* create polynomial line */
     p.strokeWeight(2.2);
 
-    // computational expensive
+    // computationally expensive
     // for (let i = 0; i < 13; i += 0.01) {
     //   p.point(cvt_x(i), cvt_y(f(i)));
     // }
@@ -121,22 +121,6 @@ const polynomial_interpolation = (p: p5) => {
     p.strokeWeight(10);
     p.point(cvt_x(x_curr), cvt_y(f(x_curr)));
 
-    if (x_curr >= 12.9) {
-      loop_backwards = true;    
-    }
-    else if (x_curr <= 0.05) {
-      loop_backwards = false;
-    }
-
-    // console.log(x_curr.toFixed(2), 0, 13);
-
-    if (loop_backwards) {
-      x_curr -= 0.1;
-    }
-    else {
-      x_curr += 0.1; 
-    }
-
     /* create glider line */
     p.stroke('#2c3e50');
     p.strokeWeight(1);
@@ -153,7 +137,32 @@ const polynomial_interpolation = (p: p5) => {
     p.stroke(30);
     p.strokeWeight(10);
     p.point(cvt_x(16), cvt_y(f(x_curr)));
-     
+
+
+    const polyfunc_label: HTMLSpanElement = document.querySelector('#polynomial_equation')!;
+    const xvalue_label: HTMLElement = document.querySelector('#x_value')!;
+    
+    xvalue_label.innerHTML = `x = <span class="x_val">${x_curr.toFixed(2)}</span>`
+    console.log('hello', cvt_y(f(x_curr)));
+    polyfunc_label.innerHTML = `f(<span class="x_val">${x_curr.toFixed(2)}</span>) = `
+                               +`(93 / 2080) * <span class="x_val">${x_curr.toFixed(2)}</span><sup>3</sup> - `
+                               +`(963 / 1040) * <span class="x_val">${x_curr.toFixed(2)}</span><sup>2</sup> + `
+                               +`(9801 / 2080) * <span class="x_val">${x_curr.toFixed(2)}</span> + `
+                               +`1 = <span class="y_val">${f(x_curr).toFixed(3)}</span>`;
+
+    if (x_curr >= 12.9) {
+      loop_backwards = true;    
+    }
+    else if (x_curr <= 0.05) {
+      loop_backwards = false;
+    }
+
+    if (loop_backwards) {
+      x_curr -= 0.1;
+    }
+    else {
+      x_curr += 0.1; 
+    }     
   }
 }
 
@@ -213,10 +222,7 @@ const linear_interpolation = (p: p5) => {
 
 
     /* create glider */
-
     // [0, 1], [5, 7], [9, 1], [13, 4] 
-
-
     console.log(x_curr.toFixed(2), vertices[nextVertice][0]);
     
     if (!loop_backwards && x_curr > vertices[nextVertice+1][0]) {
@@ -229,6 +235,15 @@ const linear_interpolation = (p: p5) => {
     const m = (vertices[nextVertice+1][1] - vertices[nextVertice][1])  / (vertices[nextVertice+1][0] - vertices[nextVertice][0]);
     const b = (-1 * m * vertices[nextVertice][0]) + vertices[nextVertice][1];
     const f = (x: number) => (m * x) + b;
+
+    const linearfunc_label: HTMLElement = document.querySelector('#linear_equation')!;
+    linearfunc_label.innerHTML = (b < 0) 
+                                    ? `f(<span class='x_val'>${x_curr.toFixed(2)}</span>) = `
+                                      +`${m} * <span class="x_val">${x_curr.toFixed(2)}</span> - `
+                                      +`${Math.abs(b)} = <span class="y_val">${f(x_curr).toFixed(2)}</span>` 
+                                    : `f(<span class="x_val">${x_curr.toFixed(2)}</span>) = `
+                                      +`${m} * <span class="x_val">${x_curr.toFixed(2)}</span> + `
+                                      +`${b} = <span class="y_val">${f(x_curr).toFixed(2)}</span>`;
     
     p.stroke('#3498db');
     p.strokeWeight(10);
@@ -258,6 +273,8 @@ const linear_interpolation = (p: p5) => {
   }
 }
 
-const app: HTMLDivElement = document.querySelector('#app')!;
-new p5(linear_interpolation, app);
-new p5(polynomial_interpolation, app);
+const linear_graph: HTMLDivElement = document.querySelector('#linear_graph')!;
+const polynomial_graph: HTMLDivElement = document.querySelector('#polynomial_graph')!;
+
+new p5(linear_interpolation, linear_graph);
+new p5(polynomial_interpolation, polynomial_graph);
