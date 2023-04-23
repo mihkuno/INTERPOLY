@@ -43,14 +43,14 @@ const windowHeight = 300;
 const cvt_x = (n: number) => (25 * n) + 50;
 const cvt_y = (n: number) => windowHeight - 50 - (25 * n);
 
+let x_curr = 0;
+let loop_backwards = false;
+
 const polynomial_interpolation = (p: p5) => {
 
   // cartesian coordinates  
   let vertices: Vertices = [ [0, 1], [5, 7], [9, 1], [13, 4] ];
   const f = (x: number) => ((93 / 2080) * Math.pow(x, 3)) - ((963 / 1040) * Math.pow(x, 2)) + ((9801 / 2080) * x) + 1;
-
-  let x_curr = 0;
-  let loop_backwards = false;
 
   p.setup = (): void => {
     p.createCanvas(windowWidth, windowHeight);
@@ -106,7 +106,7 @@ const polynomial_interpolation = (p: p5) => {
     //   p.point(cvt_x(i), cvt_y(f(i)));
     // }
 
-    // faster method
+    // efficient method
     p.strokeWeight(2.2);
     p.noFill();
     p.beginShape();
@@ -128,7 +128,7 @@ const polynomial_interpolation = (p: p5) => {
       loop_backwards = false;
     }
 
-    console.log(x_curr.toFixed(2), 0, 13);
+    // console.log(x_curr.toFixed(2), 0, 13);
 
     if (loop_backwards) {
       x_curr -= 0.1;
@@ -141,9 +141,9 @@ const polynomial_interpolation = (p: p5) => {
     p.stroke('#2c3e50');
     p.strokeWeight(1);
 
-    // for (let v of vertices) {
-    //   p.line(v[0], v[1], cvt_x(x_curr), cvt_y(f(x_curr)));
-    // }
+    for (let v of vertices) {
+      p.line(v[0], v[1], cvt_x(x_curr), cvt_y(f(x_curr)));
+    }
     p.line(cvt_x(16), cvt_y(f(x_curr)), cvt_x(x_curr), cvt_y(f(x_curr)));
     
     /* create square */
@@ -157,26 +157,19 @@ const polynomial_interpolation = (p: p5) => {
   }
 }
 
+
+
+
+
 const linear_interpolation = (p: p5) => {
 
   // cartesian coordinates  
   let vertices: Vertices = [ [0, 1], [5, 7], [9, 1], [13, 4] ];
-  const f = (x: number) => ((93 / 2080) * Math.pow(x, 3)) - ((963 / 1040) * Math.pow(x, 2)) + ((9801 / 2080) * x) + 1;
-
-  let x_curr = 0;
-  let loop_backwards = false;
+  let nextVertice = 0;
 
   p.setup = (): void => {
     p.createCanvas(windowWidth, windowHeight);
     p.textSize(9);
-
-    // convert cartesian to screen coordinates
-    for (const v of vertices) {
-      v[0] = cvt_x(v[0]);
-      v[1] = cvt_y(v[1]);
-    }
-
-    p.print(vertices.flat());
   }
 
   p.draw = (): void => {
@@ -209,49 +202,51 @@ const linear_interpolation = (p: p5) => {
     p.strokeWeight(7);
 
     for (const v of vertices) {
-      p.point(v[0], v[1]);
+      p.point(cvt_x(v[0]), cvt_y(v[1]));
     }
     
     /* create linear line */
     p.strokeWeight(2.2);
-    // for (let i = 0; i < 13; i += 0.01) {
-    //   p.point(cvt_x(i), cvt_y(f(i)));
-    // }
-
     for (let i = 0; i < vertices.length - 1; i++) {
-      p.line(vertices[i][0], vertices[i][1], vertices[i+1][0], vertices[i+1][1]);
+      p.line(cvt_x(vertices[i][0]), cvt_y(vertices[i][1]), cvt_x(vertices[i+1][0]), cvt_y(vertices[i+1][1]));
     }
 
+
     /* create glider */
+
+    // [0, 1], [5, 7], [9, 1], [13, 4] 
+
+
+    console.log(x_curr.toFixed(2), vertices[nextVertice][0]);
+    
+    if (!loop_backwards && x_curr > vertices[nextVertice+1][0]) {
+      nextVertice++;
+    }
+    else if (x_curr < vertices[nextVertice][0] && vertices[nextVertice][0] != 0) {
+      nextVertice--;
+    }
+
+    const m = (vertices[nextVertice+1][1] - vertices[nextVertice][1])  / (vertices[nextVertice+1][0] - vertices[nextVertice][0]);
+    const b = (-1 * m * vertices[nextVertice][0]) + vertices[nextVertice][1];
+    const f = (x: number) => (m * x) + b;
+    
     p.stroke('#3498db');
     p.strokeWeight(10);
     p.point(cvt_x(x_curr), cvt_y(f(x_curr)));
 
-    if (x_curr >= 12.9) {
-      loop_backwards = true;    
-    }
-    else if (x_curr <= 0.05) {
-      loop_backwards = false;
-    }
+    console.log(x_curr);
 
-    console.log(x_curr.toFixed(2), 0, 13);
-
-    if (loop_backwards) {
-      x_curr -= 0.1;
-    }
-    else {
-      x_curr += 0.1; 
-    }
 
     /* create glider line */
     p.stroke('#2c3e50');
     p.strokeWeight(1);
 
-    // for (let v of vertices) {
-    //   p.line(v[0], v[1], cvt_x(x_curr), cvt_y(f(x_curr)));
-    // }
+    for (let v of vertices) {
+      p.line(cvt_x(v[0]), cvt_y(v[1]), cvt_x(x_curr), cvt_y(f(x_curr)));
+    }
     p.line(cvt_x(16), cvt_y(f(x_curr)), cvt_x(x_curr), cvt_y(f(x_curr)));
     
+
     /* create square */
     p.noStroke();
     p.fill('#3498db');
@@ -264,5 +259,5 @@ const linear_interpolation = (p: p5) => {
 }
 
 const app: HTMLDivElement = document.querySelector('#app')!;
-new p5(polynomial_interpolation, app);
 new p5(linear_interpolation, app);
+new p5(polynomial_interpolation, app);
